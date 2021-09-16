@@ -68,8 +68,8 @@ public class Task1 {
         return (prob*prize)>pay;
     }
 
-    public static int frames(int frames, int minute){
-        return frames*minute*60;
+    public static int frames(int frames, int min){
+        return frames*min*60;
     }
 
     public static int mod(int ch1, int ch2){
