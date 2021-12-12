@@ -1,0 +1,320 @@
+import java.util.*;
+
+public class Main {
+    public static void main (String[] args) {
+        System.out.println(bell(5));//1 task
+        System.out.println(translateWord ("apple"));//2 task
+        System.out.println(translateSentence ("I like to eat honey waffles."));//2 task
+        System.out.println(validColor("rgba(0,0,0,0.123456789)") );//3 task
+        System.out.println(stripUrlParams("https://edabit.com?a=1&b=2&a=2", new String[]{"b"}));//4 task
+        System.out.println(getHashTags("Why You Will Probably Pay More for Your Christmas Tree This Year"));//5 task
+        System.out.println(ulam(206));//6 task
+        System.out.println(longestNonrepeatingSubstring("abcda"));//7 task
+        System.out.println(convertToRoman(3999));//8 task
+        System.out.println(formula("16 * 10 = 160"));//9 task
+        System.out.println(palindromedescendant(11211230));//10 task
+
+
+    }
+    static String stripUrlParams(String url, String[] paramsToStrip) {
+        if (!url.contains("?")) {
+            return url;
+        }
+
+        String[] params = url.split("\\?{1}")[1].split("\\&");
+        Map<String, String> map = new LinkedHashMap<String, String>();
+        for (String p : params) {
+            String[] s = p.split("={1}");
+            map.put(s[0], s[1]);
+        }
+        if (paramsToStrip != null) {
+            for (String s : paramsToStrip) {
+                map.remove(s);
+            }
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(url.split("\\?{1}")[0]);
+        if (map.size() > 0)
+            sb.append("?");
+        for (Map.Entry entry : map.entrySet()) {
+            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+
+        return sb.toString().substring(0, sb.length() - 1);
+    }
+    public static boolean formula(String line) {
+        ArrayList<Integer> results = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer(line);
+        int value = Integer.parseInt(st.nextToken());
+        while (st.hasMoreTokens()) {
+            switch (st.nextToken()) {
+                case "+" -> value += Integer.parseInt(st.nextToken());
+                case "-" -> value -= Integer.parseInt(st.nextToken());
+                case "*" -> value *= Integer.parseInt(st.nextToken());
+                case "/" -> value /= Integer.parseInt(st.nextToken());
+                case "=" -> {
+                    results.add(value);
+                    value = Integer.parseInt(st.nextToken());
+                }
+                default -> value = Integer.parseInt(st.nextToken());
+            }
+        }
+        results.add(value);
+        boolean ret = true;
+        for (int result : results) ret &= (result == results.get(0));
+        return ret;
+    }
+
+    public static String longestNonrepeatingSubstring(String string) {
+        int len = string.length();
+        if (len > 0) {
+            Map<Character, Integer> cursor = new HashMap<>();
+            cursor.put(string.charAt(0), 0);
+            int[] lengthAt = new int[string.length()];
+            lengthAt[0] = 1;
+            int max = 0;
+            for (int i = 1; i < len; i++) {
+                char c = string.charAt(i);
+                if (cursor.containsKey(c)) {
+                    lengthAt[i] = Math.min(lengthAt[i - 1] + 1, i - cursor.get(c));
+                } else {
+                    lengthAt[i] = lengthAt[i - 1] + 1;
+                }
+                max = Math.max(max, lengthAt[i]);
+                cursor.put(c, i);
+            }
+            for (int i = 0; i < len; i++) {
+                if (max == lengthAt[i]) {
+                    return string.substring(i - max + 1, i + 1);
+                }
+            }
+        }
+        return string;
+    }
+    public static boolean palindromedescendant(int num) {
+
+        String intStr = String.valueOf(num);
+        char[] chars=intStr.toCharArray();
+        int[] array=new int[chars.length];
+        for(int d=0;d< chars.length;d++){
+            array[d]=Integer.parseInt(String.valueOf(chars[d]));
+        }
+        int length=chars.length;
+        int orignal = num, reversed = 0;
+        while (num != 0) {
+            reversed = (reversed * 10) + (num % 10);
+            num /= 10;
+        }
+        if(reversed == orignal){
+            return true;
+        }
+        else if(intStr.length() % 2 != 0){
+            System.out.println("Неверные входные данные");return false;
+        }
+        else{
+           while(length>=2){
+               String line="";
+               int sum=0;
+               for(int f=0;f<length/2;f++){
+                   array[f]= array[sum]+array[sum+1];
+                   sum+=2;
+               }
+               for(int d=0;d<length/2;d++){
+                   line+= String.valueOf(array[d]);
+               }
+
+               int n=Integer.parseInt(line);
+                orignal = n; reversed = 0;
+               while (n != 0) {
+                   reversed = (reversed * 10) + (n % 10);
+                   n /= 10;
+               }
+
+               if(reversed == orignal){
+                   return true;
+               }else{
+                   sum=0;
+                   length/=2;
+                   line="";
+               }
+           }
+        }
+        return false;
+    }
+    public static String convertToRoman(int n){
+        int[] arr = new int[]{1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        String[] num = new String[]{"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        ArrayList<String> arrayList=new ArrayList<>();
+        String line="";
+        for (int i = 0; i < arr.length; i += 1) {
+            while (n >= arr[i]){
+                n -= arr[i];
+                arrayList.add(num[i]);
+            }
+        }
+        for(int i=0;i<arrayList.size();i++){
+            line+=arrayList.get(i);
+        }
+        return line;
+    }
+    public static Long ulam(int n){
+        final int MAX =3000;
+        ArrayList<Long> arr=new ArrayList<>();
+        arr.add(1L);
+        arr.add(2L);
+        for (int i = 3; i < MAX; i++) {
+            int count = 0;
+            for (int j = 0; j < arr.size() - 1; j++) {
+                for (int k = j + 1; k < arr.size(); k++) {
+                    if (arr.get(j) + arr.get(k) == i) {
+                        count++;
+                    }
+                    if (count > 1)
+                        break;
+                }
+                if (count > 1)
+                    break;
+            }
+            if (count == 1) {
+                arr.add((long) i);
+            }
+        }
+        return arr.get(n - 1);
+    }
+    public static ArrayList<String> getHashTags(String line){
+        String[] words = line.split(" ");
+        ArrayList<String> arrayList=new ArrayList<>();
+        for(int i=0;i<words.length;i++){
+            char[] chars=words[i].toCharArray();
+            String s="#";
+            if(chars[0]>='A'&&chars[0]<='Z'){
+                if(chars[chars.length-1]=='.'||chars[chars.length-1]==','){
+                    for(int l=0;l<chars.length-1;l++){
+                        s+=chars[l];
+                    }
+                    arrayList.add(s);
+                }
+                else{
+                    for(int l=0;l<chars.length;l++){
+                        s+=chars[l];
+                    }
+                    arrayList.add(s);
+                }
+            }
+        }
+        String[] w= arrayList.toArray(new String[arrayList.size()]);
+        Arrays.sort(w, Comparator.comparing(String::length).reversed());
+        ArrayList<String> stringArrayList=new ArrayList<>();
+        if(w.length<4){
+            for(int i=0;i< w.length;i++){
+                stringArrayList.add(w[i].toLowerCase(Locale.ROOT));
+            }
+        }
+        else{
+            for(int i=0;i<3;i++){
+                stringArrayList.add(w[i].toLowerCase(Locale.ROOT));
+            }
+        }
+        return stringArrayList;
+    }
+    public static boolean validColor(String line){
+        String[] words = line.split("\\(");
+        if(Objects.equals(words[0], "rgb")){
+            char[] chars=words[1].toCharArray();
+            String s="";
+            for(int i=0;i<chars.length-1;i++){
+                s+=chars[i];
+            }
+            String[] words2=s.split(",");
+            if(words2.length==3){
+                if((Integer.parseInt(words2[0])>=0&&Integer.parseInt(words2[0])<=256)
+                        &&(Integer.parseInt(words2[1])>=0&&Integer.parseInt(words2[1])<=256)
+                        &&(Integer.parseInt(words2[2])>=0&&Integer.parseInt(words2[2])<=256)){
+                    return true;
+                }
+            }
+        }
+        else if(Objects.equals(words[0], "rgba")){
+            char[] chars=words[1].toCharArray();
+            String s="";
+            for(int i=0;i<chars.length-1;i++){
+                s+=chars[i];
+            }
+            String[] words2=s.split(",");
+            if(words2.length==4){
+                if((Integer.parseInt(words2[0])>=0&&Integer.parseInt(words2[0])<=256)
+                        &&(Integer.parseInt(words2[1])>=0&&Integer.parseInt(words2[1])<=256)
+                        &&(Integer.parseInt(words2[2])>=0&&Integer.parseInt(words2[2])<=256)
+                        &&(Double.parseDouble(words2[3])>=0&&Double.parseDouble(words2[3])<=1)){
+                    return true;
+                }
+            }
+        }
+        else{System.out.println("Ошибка входных данных");}
+        return false;
+    }
+    public static String translateSentence(String line){
+        char[] chars=line.toCharArray();
+        line="";int num=0;
+        for(int i=0;i<chars.length;i++){
+            if(chars[i]=='.'){num++;}
+            else{
+                line+=chars[i];
+            }
+        }
+        String[] words = line.split(" ");
+        ArrayList<String> arrayList=new ArrayList<>();
+        for(int l=0;l<words.length;l++){
+            String line2=words[l];
+            String newStr = "";
+            String strLowerCase = line2.toLowerCase();
+            for (int i = 0; i < line2.length(); i++) {
+                char ch = strLowerCase.charAt(i);
+                if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
+                    newStr = line2.substring(i) + line2.substring(0, i);
+                    break;
+                }
+
+            }
+            char ch=line2.charAt(0);
+            if(ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u'||ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U')newStr+="yay ";
+            else newStr+="ay ";
+            arrayList.add(newStr);
+        }
+        if(num>0){
+            arrayList.add(".");
+        }
+        String out="";
+        for(int i=0;i<arrayList.size();i++){
+            out+=arrayList.get(i);
+        }
+        return out;
+    }
+    public static String translateWord (String line){
+    String newStr = "";
+    String strLowerCase = line.toLowerCase();
+    for (int i = 0; i < line.length(); i++) {
+        char ch = strLowerCase.charAt(i);
+        if (ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u') {
+            newStr = line.substring(i) + line.substring(0, i);
+            break;
+        }
+    }
+    char ch=line.charAt(0);
+    if(ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u')newStr+="yay";
+    else newStr+="ay";
+    return newStr;
+    }
+    public static int bell(int n) {
+        int[][] bell = new int[n+1][n+1];
+        bell[0][0] = 1;
+        for (int i=1; i<=n; i++)
+        {
+            bell[i][0] = bell[i-1][i-1];
+            for (int j=1; j<=i; j++)
+                bell[i][j] = bell[i-1][j-1] + bell[i][j-1];
+        }
+        return bell[n][0];
+    }
+}  
