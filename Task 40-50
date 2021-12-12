@@ -1,0 +1,444 @@
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws NoSuchAlgorithmException {
+        System.out.println(encrypt("Hello"));//1 task
+        System.out.println(decrypt(new int[]{ 72, 33, -73, 84, -12, -3, 13, -13, -68 }));//1 task
+        System.out.println(canMove("Bishop", "C4", "B3"));//2 task
+        System.out.println(canComplete("butl", "beautiful"));//3 task
+        System.out.println(sumDigProd(new int[]{1, 2, 3, 4, 5, 6}));//4 task
+        System.out.println(sameVowelGroup(new String[]{"hoops", "chuff", "bot", "bottom"}));//5 task
+        System.out.println(validateCard(1234567890123452L));//6 task
+        System.out.println(numToEng(745,"RU"));//7 task
+        System.out.println(getSha256Hash("password123"));//8 task
+        System.out.println(correctTitle("jOn SnoW, kINg IN thE noRth."));//9 task
+        System.out.println(hexLattice(61));//10 task
+    }
+    public static String decrypt(int[] array){
+        String line="";
+        int num=0;
+        for(int i=0;i<array.length;i++){
+            char chars= (char) ((char)(array[i]+num));
+            line+=chars;
+            num=chars;
+        }
+        return line;
+    }
+    public static ArrayList<Integer> encrypt(String line){
+        int num=0;
+        char[] chars=line.toCharArray();
+        ArrayList<Integer> arrayList=new ArrayList();
+        for(int i=0;i<chars.length;i++){
+            String name = String.valueOf(chars[i]);
+            arrayList.add((int) name.charAt(0)-num);
+            num=name.charAt(0);
+        }
+        return arrayList;
+    }
+    public static boolean canMove(String figure,String p1,String p2){
+        char[] chars=p1.toCharArray();
+        char[] chars2=p2.toCharArray();
+        int A;int B;
+        switch (chars[0]) {
+            case ('A') -> chars[0] = '1';
+            case ('B') -> chars[0] = '2';
+            case ('C') -> chars[0] = '3';
+            case ('D') -> chars[0] = '4';
+            case ('E') -> chars[0] = '5';
+            case ('F') -> chars[0] = '6';
+            case ('G') -> chars[0] = '7';
+            case ('H') -> chars[0] = '8';
+            default -> {
+                System.out.println("Вне шахмотной доски");
+                System.exit(0);
+            }
+        }
+        switch (chars2[0]) {
+            case ('A') -> chars2[0] = '1';
+            case ('B') -> chars2[0] = '2';
+            case ('C') -> chars2[0] = '3';
+            case ('D') -> chars2[0] = '4';
+            case ('E') -> chars2[0] = '5';
+            case ('F') -> chars2[0] = '6';
+            case ('G') -> chars2[0] = '7';
+            case ('H') -> chars2[0] = '8';
+            default -> {
+                System.out.println("Вне шахмотной доски");
+                System.exit(0);
+            }
+        }
+        p1="";
+        p2="";
+        for(int i=0;i<chars.length;i++){
+            p1+=chars[i];
+        }
+        for(int i=0;i<chars2.length;i++){
+            p2+=chars2[i];
+        }
+        A=Integer.parseInt(p1);
+        B=Integer.parseInt(p2);
+        if(Objects.equals(figure, "Bishop")){//Слон
+            int num = 0;
+            for (; A+num < 88;) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num+11;
+            }
+            num=0;
+            for (; 0 < A+num;) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num-9;
+            }
+            num=0;
+            for (; 0 < A+num;) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num-11;
+            }
+            num = 0;
+            for (; A+num < 88;) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num+9;
+            }
+        }
+        else if(Objects.equals(figure, "Rook")) {//Ладья
+            int num = 0;
+            for (int i = A % 10; i < 8; i++) {
+                if (A+num == B) {
+                    return true;
+                }
+                num++;
+            }
+            num=0;
+            for (int i = A % 10; 0 < i; i--) {
+                if (A+num == B) {
+                    return true;
+                }
+                num--;
+            }
+            num=0;
+            for (int i = A / 10; 0 < i; i--) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num-10;
+            }
+            num = 0;
+            for (int i = A / 10; i < 8; i++) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num+10;
+            }
+        }
+        else if(Objects.equals(figure, "Queen")){//Ферзь
+            int num = 0;
+            for (; A+num < 88;) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num+11;
+            }
+            num=0;
+            for (; 0 < A+num;) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num-9;
+            }
+            num=0;
+            for (; 0 < A+num;) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num-11;
+            }
+            num = 0;
+            for (; A+num < 88;) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num+9;
+            }
+            num = 0;
+            for (int i = A % 10; i < 8; i++) {
+                if (A+num == B) {
+                    return true;
+                }
+                num++;
+            }
+            num=0;
+            for (int i = A % 10; 0 < i; i--) {
+                if (A+num == B) {
+                    return true;
+                }
+                num--;
+            }
+            num=0;
+            for (int i = A / 10; 0 < i; i--) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num-10;
+            }
+            num = 0;
+            for (int i = A / 10; i < 8; i++) {
+                if (A+num == B) {
+                    return true;
+                }
+                num=num+10;
+            }
+        }
+        else if(Objects.equals(figure, "Pawn")){//Пешка
+            if(B-A==1){return true;}
+        }
+        else if(Objects.equals(figure, "Knight")){//Конь
+            if(Math.abs(A-B)==19||Math.abs(A-B)==8||Math.abs(A-B)==12||Math.abs(A-B)==21){return true;}
+        }
+        else if(Objects.equals(figure, "King")){//Король
+            if(Math.abs(A-B)==9||Math.abs(A-B)==1||Math.abs(A-B)==11||Math.abs(A-B)==10){return true;}
+        }
+        else{System.out.println("Неверно введена фигура");}
+        return false;
+    }
+    public static Object hexLattice(int num){
+        String result="";
+        int root= (int) ((3+Math.sqrt(12*num-3))/6);
+        if((num-1)%6==0){
+            String o="";
+            ArrayList<String> arrayList=new ArrayList<>();
+            for(int i=0;i<root;i++){
+                o+=" o";
+            }
+            String oo;
+            for(int s=0;s<root;s++){
+                oo=o;
+                for(int centr=root;centr!=s;centr--) {
+                    oo=" "+oo;
+                }
+                arrayList.add(oo);
+                o+=" o";
+            }
+            int length=arrayList.size()-1;
+            int ss=0;
+            while(length>ss){
+                arrayList.add(arrayList.get(length-1-ss));
+               ss++;
+            }
+            for(int i=0;i<arrayList.size();i++){
+                result+=arrayList.get(i)+"\n";
+            }
+        }
+        else return "Invalid";
+        return result;
+    }
+    public static boolean validateCard(long num){
+        String s = String.valueOf(num);
+        ArrayList<Character> arrayList=new ArrayList<>();
+        char[] chars=s.toCharArray();
+        int last= Integer.parseInt(String.valueOf(chars[chars.length-1]));
+        for(int i=0;i< chars.length-1;i++){
+            arrayList.add(chars[i]);
+        }
+        Collections.reverse(arrayList);
+        for(int i=0;i< arrayList.size();i++){
+            chars[i]=arrayList.get(i);
+        }
+        for(int e=0;e<chars.length;e++){
+            int umn=Integer.parseInt(String.valueOf(chars[e]))*2;
+            if(umn>9){
+                String s1= String.valueOf(umn);
+                char[] chars1=s1.toCharArray();
+                int sum=Integer.parseInt(String.valueOf(chars1[0]))+Integer.parseInt(String.valueOf(chars1[1]));
+                String bb= String.valueOf(sum);
+                chars[e]=bb.charAt(0);
+            }
+            else{
+                String bb= String.valueOf(umn);
+                chars[e]= bb.charAt(0);
+            }
+            e++;
+        }
+        int lastsum=0;
+        for(int f=0;f< chars.length-1;f++){
+            lastsum+=Integer.parseInt(String.valueOf(chars[f]));
+        }
+        char[] chars1=String.valueOf(lastsum).toCharArray();
+        int finish=10-Integer.parseInt(String.valueOf(chars1[1]));
+        return finish==last;
+    }
+    public static String correctTitle(String line){
+        String[] word=line.split(" ");
+        ArrayList<String> arrayList=new ArrayList<>();
+        for(int i=0;i< word.length;i++) {
+            word[i]=word[i].toLowerCase(Locale.ENGLISH);
+            if(Objects.equals(word[i], "and")||Objects.equals(word[i], "the")||Objects.equals(word[i], "of")||Objects.equals(word[i], "in")){
+                arrayList.add(word[i]);
+            }
+            else{
+                char[] ch=word[i].toCharArray();
+                ch[0]=Character.toUpperCase(ch[0]);
+                String s="";
+                for(int h=0;h<ch.length;h++){
+                    s+=ch[h];
+                }
+                arrayList.add(s);
+            }
+        }
+        String s="";
+        for(int p=0;p<arrayList.size();p++){
+            s+=arrayList.get(p)+" ";
+        }
+        return s;
+    }
+    public static String getSha256Hash(String line) throws NoSuchAlgorithmException {
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        md.update(line.getBytes(StandardCharsets.UTF_8));
+        byte[] digest = md.digest();
+        String hex = String.format("%064x", new BigInteger(1, digest));
+        return hex;
+    }
+    public static String numToEng(long num,String lang){
+        String dig1[][] = {{"one", "two", "three", "four", "five", "six", "seven", "eight", "nine"},
+                {"one", "two"}};
+        String dig10[] = {"ten","eleven", "twelve", "thirteen", "fourteen",
+                "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"};
+        String dig20[] = {"twenty", "thirty", "forty", "fifty",
+                "sixty", "seventy", "eighty", "ninety"};
+        String dig100[] = {"one hundred","two hundred", "three hundred", "four hundred", "five hundred",
+                "six hundred", "seven hundred", "eight hundred", "nine hundred"};
+        if(lang=="RU") {
+            dig1 = new String[][]{{"одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять"},
+                    {"один", "два"}};
+            dig10 = new String[]{"десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+                    "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"};
+            dig20 = new String[]{"двадцать", "тридцать", "сорок", "пятьдесят",
+                    "шестьдесят", "семьдесят", "восемьдесят", "девяносто"};
+            dig100 = new String[]{"сто", "двести", "триста", "четыреста", "пятьсот",
+                    "шестьсот", "семьсот", "восемьсот", "девятьсот"};
+        }
+        else if(lang=="ENG"){}
+        else{System.out.println("Ошибка определения языка");System.exit(0);}
+
+
+            StringBuilder words = new StringBuilder(40);
+            if (num==0) words.append("zero ");         //исключительный случай
+            int d = (int) (num/100);              //цифра сотен
+        if (d>0) words.append(dig100[d-1]).append(" ");
+            int n = (int) (num%100);
+            d = n/10;                   //цифра десятков
+            n = n%10;                   //цифра единиц
+            switch(d) {
+                case 0: break;
+                case 1: words.append(dig10[n]).append(" ");break;
+                default: words.append(dig20[d-2]).append(" ");
+            }
+            if (d==1) n=0;              //при двузначном остатке от 10 до 19, цифра едициц не должна учитываться
+            switch(n) {
+                case 0:
+                case 1:
+                    break;
+                default: words.append(dig1[0][n-1]).append(" ");
+            }
+            switch(n) {
+                case 2:
+                case 3:
+                    break;
+            }
+            long nextnum = num/1000;
+        if(nextnum>0) {
+            return ( " " + words).trim();
+        } else {
+            return words.toString().trim();
+        }
+    }
+    public static ArrayList<String> sameVowelGroup(String[] words) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        ArrayList<String> arrayList2 = new ArrayList<>();
+        for (int l = 0; l < words.length; l++) {
+            char[] character = words[l].toLowerCase(Locale.ENGLISH).toCharArray();
+            Arrays.sort(character);
+            String line = "";
+            for (int i = 0; i < character.length; i++) {
+                if (character[i] == 'a' || character[i] == 'e' || character[i] == 'i' || character[i] == 'o' || character[i] == 'u' || character[i] == 'y') {
+                    line += character[i];
+                }
+            }
+            arrayList.add(line);
+        }
+        String[] mass= new String[arrayList.size()];
+        for(int r=0;r< mass.length;r++){
+            mass[r]=arrayList.get(r);
+        }
+        for(int l=0;l< mass.length;l++){
+            ArrayList<Character> characterArrayList=new ArrayList<>();
+            String f=mass[l];
+            char[] cha =f.toCharArray();
+            for (char c : cha) {
+                characterArrayList.add(c);
+            }
+        for(int i=0; i<mass[l].length(); i++) {
+            for (int j = i + 1; j < mass[l].length(); j++) {
+                if (characterArrayList.get(i) == characterArrayList.get(j)) {
+                    characterArrayList.remove(j);
+                    String last= String.valueOf(characterArrayList.get(i));
+                    mass[l]=last;
+                }
+            }
+        }
+        String slovo="";
+        for(int a=0;a<characterArrayList.size();a++){
+            slovo+= characterArrayList.get(a);
+            }
+        mass[l]=slovo;
+        }
+            arrayList2.add(words[0]);
+        for(int i=1;i<mass.length;i++){
+            if(Objects.equals(mass[0], mass[i])){
+                arrayList2.add(words[i]);
+            }
+        }
+
+        return arrayList2;
+    }
+    public static int sumDigProd(int[] array){
+        int sum=0;
+
+        for(int i=0;i<array.length;i++){
+        sum+=array[i];
+        }
+        if(array.length==1){return sum;}
+        String s=String.valueOf(sum);
+
+        while(s.length()>1){
+            int middle=(Integer.toString(sum).length())/2;
+            int mod=sum%((int)Math.pow(10,s.length()-middle));
+            int div=sum/((int)Math.pow(10,s.length()-middle));
+            sum=mod*div;
+            s=String.valueOf(sum);
+        }
+        return sum;
+    }
+    public static boolean canComplete(String line,String line2){
+        int ii=0;int num=0;
+        char character[]=line.toCharArray();
+        char character2[]=line2.toCharArray();
+        for(int i=0;i<character2.length;i++){
+            if(character[ii]==character2[i]){
+                num++;
+                ii++;
+            }
+        }
+        return num==character.length;
+    }
+}
